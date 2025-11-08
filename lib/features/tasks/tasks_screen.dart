@@ -79,6 +79,7 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
                   child: Chip(
                       label: Text('Filter: ${statusFilter.toUpperCase()}')),
                 ),
+                SizedBox(width: 8),
                 PopupMenuButton<String>(
                   onSelected: (value) {
                     setState(() => sortBy = value);

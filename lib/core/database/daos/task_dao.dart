@@ -165,8 +165,20 @@ class TaskDao {
     final tagMaps =
         await txn.query('task_tags', where: 'task_id = ?', whereArgs: [id]);
     final tagIds = tagMaps.map((m) => m['tag_id'] as int).toList();
-    final tags = await _getTagsByIds(tagIds);
+    final tags = await _getTagsByIdsInTransaction(txn, tagIds);
     return task.copyWith(tags: tags);
+  }
+
+  Future<List<TagModel>> _getTagsByIdsInTransaction(
+      Transaction txn, List<int> ids) async {
+    if (ids.isEmpty) return [];
+    final placeholders = ids.map((_) => '?').join(',');
+    final maps = await txn.query(
+      'tags',
+      where: 'id IN ($placeholders)',
+      whereArgs: ids,
+    );
+    return maps.map(TagModel.fromMap).toList();
   }
 // Add these to TaskDao class
 
